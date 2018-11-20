@@ -13,7 +13,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
   static propTypes = propTypes
   static defaultProps = defaultProps
 
-  constructor (props) {
+  constructor(props) {
     super()
 
     this.getResolvedState = this.getResolvedState.bind(this)
@@ -45,7 +45,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
     }
   }
 
-  render () {
+  render() {
     const resolvedState = this.getResolvedState()
     const {
       children,
@@ -422,14 +422,14 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
         >
           {isFilterable
             ? _.normalizeComponent(
-                ResolvedFilterComponent,
-                {
-                  column,
-                  filter,
-                  onChange: value => this.filterColumn(column, value),
-                },
-                defaultProps.column.Filter
-              )
+              ResolvedFilterComponent,
+              {
+                column,
+                filter,
+                onChange: value => this.filterColumn(column, value),
+              },
+              defaultProps.column.Filter
+            )
             : null}
         </ThComponent>
       )
@@ -615,7 +615,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                 }
               }
 
-              const resolvedOnExpanderClick = useOnExpanderClick ? onExpanderClick : () => {}
+              const resolvedOnExpanderClick = useOnExpanderClick ? onExpanderClick : () => { }
 
               // If there are multiple onClick events, make sure they don't
               // override eachother. This should maybe be expanded to handle all
@@ -796,7 +796,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
       )
     }
 
-    const makePagination = () => {
+    const makePagination = isTop => {
       const paginationProps = _.splitProps(
         getPaginationProps(finalState, undefined, undefined, this)
       )
@@ -810,13 +810,13 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
           onPageSizeChange={this.onPageSizeChange}
           className={paginationProps.className}
           style={paginationProps.style}
+          isTop={isTop}
           {...paginationProps.rest}
         />
       )
     }
 
     const makeTable = () => {
-      const pagination = makePagination()
       return (
         <div
           className={classnames('ReactTable', className, rootProps.className)}
@@ -827,7 +827,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
           {...rootProps.rest}
         >
           {showPagination && showPaginationTop ? (
-            <div className="pagination-top">{pagination}</div>
+            <div className="pagination-top">{makePagination(true)}</div>
           ) : null}
           <TableComponent
             className={classnames(tableProps.className, currentlyResizing ? 'rt-resizing' : '')}
@@ -851,7 +851,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
             {hasColumnFooter ? makeColumnFooters() : null}
           </TableComponent>
           {showPagination && showPaginationBottom ? (
-            <div className="pagination-bottom">{pagination}</div>
+            <div className="pagination-bottom">{makePagination(false)}</div>
           ) : null}
           {!pageRows.length && (
             <NoDataComponent {...noDataProps}>{_.normalizeComponent(noDataText)}</NoDataComponent>
